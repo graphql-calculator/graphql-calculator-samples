@@ -1,4 +1,4 @@
-package graphql.kickstart.servlet;
+package kickstart.servlet;
 
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;

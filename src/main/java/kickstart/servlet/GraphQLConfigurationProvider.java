@@ -1,10 +1,6 @@
-package graphql.kickstart.servlet;
+package kickstart.servlet;
 
 
-import static graphql.schema.idl.RuntimeWiring.newRuntimeWiring;
-import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
-
-import calculator.config.Config;
 import calculator.config.DefaultConfig;
 import calculator.graphql.CalculatorDocumentCachedProvider;
 import calculator.graphql.DefaultGraphQLSourceBuilder;
@@ -13,6 +9,7 @@ import graphql.ExecutionInput;
 import graphql.execution.preparsed.PreparsedDocumentEntry;
 import graphql.kickstart.execution.GraphQLQueryInvoker;
 import graphql.kickstart.execution.config.DefaultExecutionStrategyProvider;
+import graphql.kickstart.servlet.GraphQLConfiguration;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.StaticDataFetcher;
 import graphql.schema.idl.RuntimeWiring;
@@ -27,6 +24,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
+import static graphql.schema.idl.RuntimeWiring.newRuntimeWiring;
+import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
+
 class GraphQLConfigurationProvider {
 
     private static GraphQLConfigurationProvider instance;
@@ -36,30 +36,37 @@ class GraphQLConfigurationProvider {
     private GraphQLConfigurationProvider() {
 
         /**
-         * step 1: 参考
+         * step 1: 使用 graphql calculator 生成GraphQL计算执行引擎
          */
-        Config wrapperConfig = DefaultConfig.newConfig().build();
         DefaultGraphQLSourceBuilder graphqlSourceBuilder = new DefaultGraphQLSourceBuilder();
         GraphQLSource source = graphqlSourceBuilder
-                .wrapperConfig(wrapperConfig)
+                .wrapperConfig(DefaultConfig.newConfig().build())
+                // 原始 Schema
                 .originalSchema(createSchema())
+                // 建议使用 CalculatorDocumentCachedProvider 实现类
                 .preparsedDocumentProvider(new DocumentParseAndValidationCache())
                 .build();
 
+        /**
+         * step 2:
+         *      创建 GraphQLConfiguration 用的 graphql相关对象，使用 'GraphQLSource source' 中的数据；
+         *      主要有 queryExecutionStrategy、Instrumentation、GraphQLSchema 和 PreparsedDocumentProvider
+         *
+         */
         GraphQLQueryInvoker queryInvoker = GraphQLQueryInvoker.newBuilder()
                 .withExecutionStrategyProvider(
                         new DefaultExecutionStrategyProvider(
                                 source.getGraphQL().getQueryStrategy(),
                                 source.getGraphQL().getMutationStrategy(),
                                 source.getGraphQL().getSubscriptionStrategy()))
-                // kp
+                // calculator source
                 .withInstrumentation(source.getGraphQL().getInstrumentation())
-                // kp
+                // calculator source
                 .withPreparsedDocumentProvider(source.getGraphQL().getPreparsedDocumentProvider())
                 .build();
 
         configuration = GraphQLConfiguration.
-                // kp 3
+                        // calculator source
                         with(source.getWrappedSchema())
                 .with(queryInvoker)
                 .build();
