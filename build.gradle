@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    // https://mvnrepository.com/artifact/com.graphql-java/graphql-java-servlet
+    // https://mvnrepository.com/artifact/com.graphql-java-kickstart/graphql-java-servlet
+    implementation group: 'com.graphql-java-kickstart', name: 'graphql-java-servlet', version: '12.0.0'
+
+    // https://mvnrepository.com/artifact/com.graphql-java-calculator/graphql-java-calculator
+    implementation group: 'com.graphql-java-calculator', name: 'graphql-java-calculator', version: '1.3.1'
+    implementation "io.projectreactor:reactor-core:3.4.9"
+    implementation 'ch.qos.logback:logback-classic:1.2.5'
+    implementation 'org.slf4j:slf4j-simple:2.0.0-alpha4'
+    implementation group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.4.43.v20210629'
+    implementation group: 'org.eclipse.jetty', name: 'jetty-annotations', version: '9.4.43.v20210629'
+    // https://mvnrepository.com/artifact/org.eclipse.jetty.websocket/websocket-api
+    implementation group: 'org.eclipse.jetty.websocket', name: 'websocket-api', version: '9.4.43.v20210629'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty.websocket/websocket-server
+    implementation group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.4.43.v20210629'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty.websocket/javax-websocket-server-impl
+    implementation group: 'org.eclipse.jetty.websocket', name: 'javax-websocket-server-impl', version: '9.4.43.v20210629'
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty.websocket/websocket-common
+    implementation group: 'org.eclipse.jetty.websocket', name: 'websocket-common', version: '9.4.43.v20210629'
+
+}
